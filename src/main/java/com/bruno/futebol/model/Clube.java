@@ -1,8 +1,8 @@
 package com.bruno.futebol.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -23,6 +23,10 @@ public class Clube {
     private String nomeLongo;
 
     private LocalDate fundacao;
+
+    @JsonIgnore
+    @OneToOne
+    private Escudo escudo;
 
     public UUID getClubeId() {
         return clubeId;
@@ -62,5 +66,13 @@ public class Clube {
 
     public void setFundacao(LocalDate fundacao) {
         this.fundacao = fundacao;
+    }
+
+    public Escudo getEscudo() {
+        return escudo;
+    }
+
+    public void setEscudo(Escudo escudo) {
+        this.escudo = escudo;
     }
 }
