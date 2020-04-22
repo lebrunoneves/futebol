@@ -4,6 +4,7 @@ import com.bruno.futebol.model.Clube;
 import com.bruno.futebol.service.ClubeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,17 +26,27 @@ public class ClubeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Clube>> getClubes() {
-        return new ResponseEntity<>(clubeService.recuperarClubes(), HttpStatus.OK);
+    public ResponseEntity getClubes() {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(clubeService.recuperarClubes());
     }
 
     @GetMapping("/{clubeId}")
-    public ResponseEntity<Clube> getClubePorId(@PathVariable UUID clubeId) {
+    public ResponseEntity getClubePorId(@PathVariable UUID clubeId) {
         Clube clube = clubeService.recuperarClubePorId(clubeId);
         if(clube == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
 
-        return new ResponseEntity<>(clube, HttpStatus.OK);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(clube);
+    }
+
+    @GetMapping("/{clubeId}/escudo")
+    public ResponseEntity getEscudo(@PathVariable UUID clubeId) {
+        Clube clube = clubeService.recuperarClubePorId(clubeId);
+
+        if(clube == null || clube.getEscudo() == null)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(clube.getEscudo().getImagem());
     }
 
 }
